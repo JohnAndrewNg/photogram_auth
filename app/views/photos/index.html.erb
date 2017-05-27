@@ -1,92 +1,128 @@
 <!--<div class="page-header">
-  <h1>
-    Photos
-    <a href="/photos/new" class="btn btn-lg btn-success">New Photo</a>
-  </h1>
+<h1>
+Photos
+<a href="/photos/new" class="btn btn-lg btn-success">New Photo</a>
+</h1>
 </div>
 
 <div class="row">
-  <div class="col-md-12">
-    <table class="table table-striped table-hover">
-      <tr>
-        <th>Caption</th>
-        <th>Image</th>
-        <th>User</th>
-        <th>Actions</th>
-      </tr>
+<div class="col-md-12">
+<table class="table table-striped table-hover">
+<tr>
+<th>Caption</th>
+<th>Image</th>
+<th>User</th>
+<th>Actions</th>
+</tr>
 
-      <% @photos.each do |photo| %>
-      <tr>
-        <td><%= photo.caption %></td>
-        <td><%= photo.image %></td>
-        <td><%= photo.user_id %></td>
-        <td>
-          <a href="/photos/<%= photo.id %>" class="btn btn-primary">Show</a>
-          <% if current_user.id == photo.user_id %>
-          <a href="/photos/<%= photo.id %>/edit" class="btn btn-warning">Edit</a>
-          <a href="/delete_photo/<%= photo.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
-          <% end %>
-        </td>
-      </tr>
-      <% end %>
-    </table>
-  </div>
+<% @photos.each do |photo| %>
+<tr>
+<td><%= photo.caption %></td>
+<td><%= photo.image %></td>
+<td><%= photo.user_id %></td>
+<td>
+<a href="/photos/<%= photo.id %>" class="btn btn-primary">Show</a>
+<% if current_user.id == photo.user_id %>
+<a href="/photos/<%= photo.id %>/edit" class="btn btn-warning">Edit</a>
+<a href="/delete_photo/<%= photo.id %>" class="btn btn-danger" rel="nofollow">Delete</a>
+<% end %>
+</td>
+</tr>
+<% end %>
+</table>
+</div>
 </div>
 
 -->
 
 
+<div class="container">
 
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <div class="jumbotron">
-      <h3>
-        All Photos
-      </h3>
+      <a href="/photos/new" class="btn btn-default btn-block">
+        <i class="fa fa-plus"></i>
+      </a>
+
+      <hr>
     </div>
   </div>
-</div>
 
-<% @photos.each do |photo| %>
+  <% @photos.each do |photo| %>
 
-<div class="row">
-  <div class="col-md-8 col-md-offset-2">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title">
-          <a href="/users/<%= photo.user.id %>"><%= photo.user.username %></a>
-          <small>
-            <%= time_ago_in_words(photo.created_at) %> ago
-          </small>
-        </h3>
-      </div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            <a href="/users/<%= photo.user.id %>"><%= photo.user.username %></a>
+            <small>
+              <%= time_ago_in_words(photo.created_at) %> ago
+            </small>
+          </h3>
+        </div>
 
-      <div class="panel-body">
-        <a href="/photos/8">
-          <img src="<%= photo.image %>" class="img-responsive">
-        </a>
+        <div class="panel-body">
+          <a href="/photos/<%= photo.id %>">
+            <img src="<%= photo.image %>" class="img-responsive">
+          </a>
 
-        <p>
-          <form action="/create_like" method="post">
-            <!-- Hidden input for authenticity token to protect from forgery -->
-            <input name="authenticity_token" type="hidden" value="4E1b5WDJgqAojmA1xxh0Y07mfla+SIF03sJG74z9uTxjQgMUtM+a0Fc3o8zbubmW4EEyNPagoErp/vMj/BHY8A==">
+          <p>
+            <% if photo.fans.find_by( {:id => current_user.id} ) %>
+            <a href="/delete_like/<%= photo.likes.find_by({:user_id => current_user.id}).id %>" class="btn btn-link">
+              <i class="fa fa-heart"></i>
+            </a>
+            <% else %>
+            <form action="/create_like" method="post">
+              <!-- Hidden input for authenticity token to protect from forgery -->
+              <input name="authenticity_token" type="hidden" value="4E1b5WDJgqAojmA1xxh0Y07mfla+SIF03sJG74z9uTxjQgMUtM+a0Fc3o8zbubmW4EEyNPagoErp/vMj/BHY8A==">
+              <input type="hidden" name="photo_id" value="<%= photo.id %>">
+              <input type="hidden" name="user_id" value="<%= current_user.id %>">
+              <button class="btn btn-link">
+                <i class="fa fa-heart-o"></i>
+              </button>
 
-            <input type="hidden" name="photo_id" value="<%= photo.id %>">
+              <% end %>
 
-            <input type="hidden" name="user_id" value="<%= current_user.id %>">
+              <!--            <% array =[] %>
+              <% photo.fans.each do |fan| %>
+              <% array.push(fan.username) %>
+              <% end %>
 
-            <button class="btn btn-link">
-              <i class="fa fa-heart-o"></i>
-            </button>
+              <% if array.count == 0  %>
+              Be the first to like this photo
+              <% elsif array.count == 1  %>
+              <%= array.to_sentence %> likes this
+              <% else  %>
+              <%= array.to_sentence %> like this
+              <% end %>
+            -->
 
-            <% photo.fans.each do |fan| %>
-            <%= fan.username %>
+            <% if photo.fans.count == 0  %>
+            Be the first to like this photo
+            <% elsif photo.fans.count == 1  %>
+            <%= photo.fans.all.pluck(:username).to_sentence %> likes this
+            <% else  %>
+            <%= photo.fans.all.pluck(:username).to_sentence %> like this
             <% end %>
-            like
-            this
+
           </form>
         </p>
+
+        <ul class="media-list">
+          <li class="media">
+            <div class="media-body">
+              <h6 class="media-heading">
+                <a href="/users/<%= photo.user_id %>"><%= photo.user.username %></a>
+                <small>
+                  <%= time_ago_in_words(photo.created_at) %> ago
+                </small>
+              </h6>
+              <%= photo.caption %>
+            </div>
+          </li>
+        </ul>
 
         <ul class="media-list">
           <% photo.comments.each do |comment|  %>

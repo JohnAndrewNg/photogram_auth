@@ -23,30 +23,65 @@
       </div>
 
       <div class="panel-body">
-        <a href="/photos/8">
+        <a href="/photos/<%= photo.id %>">
           <img src="<%= photo.image %>" class="img-responsive">
         </a>
 
         <p>
+          <% if photo.fans.find_by( {:id => current_user.id} ) %>
+          <a href="/delete_like/<%= photo.likes.find_by({:user_id => current_user.id}).id %>" class="btn btn-link">
+            <i class="fa fa-heart"></i>
+          </a>
+          <% else %>
           <form action="/create_like" method="post">
             <!-- Hidden input for authenticity token to protect from forgery -->
             <input name="authenticity_token" type="hidden" value="4E1b5WDJgqAojmA1xxh0Y07mfla+SIF03sJG74z9uTxjQgMUtM+a0Fc3o8zbubmW4EEyNPagoErp/vMj/BHY8A==">
-
             <input type="hidden" name="photo_id" value="<%= photo.id %>">
-
             <input type="hidden" name="user_id" value="<%= current_user.id %>">
-
             <button class="btn btn-link">
               <i class="fa fa-heart-o"></i>
             </button>
 
-            <% photo.fans.each do |fan| %>
-            <%= fan.username %>
             <% end %>
-            like
-            this
+
+<!--        <% array =[] %>
+            <% photo.fans.each do |fan| %>
+              <% array.push(fan.username) %>
+            <% end %>
+
+            <% if array.count == 0  %>
+              Be the first to like this photo
+            <% elsif array.count == 1  %>
+              <%= array.to_sentence %> likes this
+            <% else  %>
+              <%= array.to_sentence %> like this
+            <% end %>
+-->
+            <% if photo.fans.count == 0  %>
+              Be the first to like this photo
+            <% elsif photo.fans.count == 1  %>
+              <%= photo.fans.all.pluck(:username).to_sentence %> likes this
+            <% else  %>
+              <%= photo.fans.all.pluck(:username).to_sentence %> like this
+            <% end %>
+
           </form>
         </p>
+
+        <ul class="media-list">
+          <li class="media">
+            <div class="media-body">
+              <h6 class="media-heading">
+                <a href="/users/<%= photo.user_id %>"><%= photo.user.username %></a>
+                <small>
+                  <%= time_ago_in_words(photo.created_at) %> ago
+                </small>
+              </h6>
+              <%= photo.caption %>
+            </div>
+          </li>
+        </ul>
+
 
         <ul class="media-list">
           <% photo.comments.each do |comment|  %>

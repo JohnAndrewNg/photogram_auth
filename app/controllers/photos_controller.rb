@@ -2,6 +2,17 @@ class PhotosController < ApplicationController
   def index
     @photos = Photo.all
 
+
+#    @photos.each do |photo|
+
+#      array = []
+#      photo.fans.each do |fan|
+#        array.push(fan.username)
+#      end
+#      @array.photo.id = array.to_sentence
+#    end
+
+
     render("photos/index.html.erb")
   end
 
