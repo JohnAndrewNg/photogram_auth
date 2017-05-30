@@ -3,14 +3,20 @@ class PhotosController < ApplicationController
     @photos = Photo.all
 
 
-#    @photos.each do |photo|
+    #    @photos.each do |photo|
+        #      array = []
+    #      photo.fans.each do |fan|
+    #        array.push(fan.username)
+    #      end
+    #      @array.photo.id = array.to_sentence
+    #    end
 
-#      array = []
-#      photo.fans.each do |fan|
-#        array.push(fan.username)
-#      end
-#      @array.photo.id = array.to_sentence
+
+#    array = []
+#    @photos.each do |photo|
+#      array.push(photo.fans.username)
 #    end
+#      @fan_array = array.to_sentence
 
 
     render("photos/index.html.erb")

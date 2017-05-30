@@ -92,7 +92,7 @@
               <h6 class="media-heading">
                 <a href="/users/<%= comment.user.id %>"><%= comment.user.username %></a>
                 <small>
-                  <%= time_ago_in_words(comment.created_at) %>
+                  <%= time_ago_in_words(comment.created_at) %> ago
                 </small>
               </h6>
               <%= comment.body %>
@@ -124,7 +124,7 @@
                     <input type="text" id="body" name="body" class="form-control" placeholder="Add a comment..." required>
 
                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">
+                      <button class="btn btn-default" type="submit">
                         <i class="fa fa-commenting-o"></i>
                       </button>
                     </span>
@@ -134,6 +134,23 @@
             </div>
           </li>
         </ul>
+
+        <div class="btn-group btn-group-justified">
+
+          <a href="/photos" class="btn btn-primary">
+            <i class="fa fa-chevron-left"></i>
+          </a>
+          <% if like.photo.user_id == current_user.id %>
+          <a href="/photos/<%= like.photo.id %>/edit" class="btn btn-warning">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a href="/delete_photo/<%= like.photo.id %>" class="btn btn-danger" rel="nofollow">
+            <i class="fa fa-trash-o"></i>
+          </a>
+          <% else %>
+          <% end %>
+        </div>
+
       </div>
     </div>
   </div>
